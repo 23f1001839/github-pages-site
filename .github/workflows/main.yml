@@ -1,17 +1,38 @@
-# main.yml
-# name: Test Action
+name: Basic Workflow
 
-# on:
-#   push:
-#     branches:
-#       - main  # or any branch you want to trigger the action
+on:
+  workflow_dispatch: # Allow manual triggers only
 
-# jobs:
-#   test:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v3
+jobs:
+  test:
+    runs-on: ubuntu-latest
 
-#       - name: 23f1001839@ds.study.iitm.ac.in
-#         run: echo "Hello, world!"
+    steps:
+    - name: 23f1001839@ds.study.iitm.ac.in
+      run: echo "Hello, world!"
+
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12.3'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Selenium Tests
+      env:
+        DISPLAY: :99 # Needed for running a headless browser
+      run: |
+        mkdir -p test_output
+        python main.py
+
+    - name: Archive screenshots and logs
+      uses: actions/upload-artifact@v4
+      with:
+        name: selenium-output
+        path: selenium/
